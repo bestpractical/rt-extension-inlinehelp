@@ -45,20 +45,20 @@
 %# those contributions and any derivatives thereof.
 %#
 <%args>
-$key => ''
+$Title => ''
 </%args>
 <%init>
 my $has_help;
 my $help_class;
 my $help_content;
 my $help_title;
-if ($key) {
+if ($Title) {
     my $lh = $session{'CurrentUser'}->LanguageHandle;
     my @locs = ( $lh->language_tag(), $lh->fallback_languages() );
     my $help_class = GetSystemHelpClass( \@locs );
     if ($help_class && $help_class->Id) {
-        $help_title = GetHelpArticleTitle( $help_class->id, $key ) || $key;
-        $help_content = GetHelpArticleContent( $help_class->Id, $key );
+        $help_title = GetHelpArticleTitle( $help_class->id, $Title ) || $Title;
+        $help_content = GetHelpArticleContent( $help_class->Id, $Title );
     }
     $has_help = $help_content;
 }
