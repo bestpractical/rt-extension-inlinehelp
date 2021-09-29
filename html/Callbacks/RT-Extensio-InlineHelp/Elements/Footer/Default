@@ -1,0 +1,8 @@
+<script type="text/javascript">
+jQuery(function() {
+    // any help items that have been queued up via addPopupHelpItems() will
+    // get their popover functionality added at this point, including the default rule
+    // that matches any elements with a 'data-help' attribute
+    renderPopupHelpItems();
+});
+</script>
