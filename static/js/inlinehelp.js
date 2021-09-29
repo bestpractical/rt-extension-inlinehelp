@@ -175,7 +175,7 @@ function renderPopupHelpItems( list ) {
             }
         })
         jQuery('[data-toggle="popover"]').popover({
-            trigger: 'focus',
+            trigger: 'hover',
             html: true,
             content: popupHelpAjax
         })
