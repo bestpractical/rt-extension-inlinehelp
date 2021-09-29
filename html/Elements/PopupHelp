@@ -64,5 +64,5 @@ if ($key) {
 }
 </%init>
 % if (RT->Config->Get('ShowInlineHelp', $session{CurrentUser}) && $has_help) {
-<span data-help="<% $help_title %>" data-content="<% $help_content %>" data-action="replace" style="display: none;"/>
+<span data-help="<% $help_title %>" data-content="<% $help_content %>" data-action="replace" style="display: none;"></span>
 % }
