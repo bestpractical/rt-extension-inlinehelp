@@ -106,11 +106,8 @@ function helpify($els, item={}, options={}) {
 }
 
 function buildPopupHelpHtml(title, content) {
-	// TODO configurable glyph
-	var icon = '/static/images/question'
-	icon += (RT.Config.WebDefaultStylesheet.match(/-dark$/)) ? '-white.svg' : '.svg'
 	const contentAttr = content ? ' data-content="' + content + '" ' : ''
-	return '<a class="popup-help" tabindex="0" role="button" data-toggle="popover" title="' + title + '" data-trigger="focus" ' + contentAttr + '><img src="' + icon + '" /></a>'
+	return '<a class="popup-help" tabindex="0" role="button" data-toggle="popover" title="' + title + '" data-trigger="focus" ' + contentAttr + '><span class="far fa-question-circle fa-lg"></span></a>'
 }
 
 function applyPopupHelpAction( entry, $els ) {
