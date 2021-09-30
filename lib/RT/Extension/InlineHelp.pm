@@ -97,15 +97,7 @@ $RT::Config::META{ShowInlineHelp} = {
         my ( $ret, $msg ) = $Article->LoadByCols( Name => $article_name, Class => $class_id, Disabled => 0 );
         if ( $Article and $Article->Id ) {
             RT::Logger->debug( "Found help article id: " . $Article->Id );
-            my $class = $Article->ClassObj;
-            my $cfs   = $class->ArticleCustomFields;
-            while ( my $cf = $cfs->Next ) {
-                if ( $cf->Name eq 'Content' ) {
-                    my $ocfvs = $Article->CustomFieldValues( $cf->Id );
-                    my $ocfv  = $ocfvs->First;
-                    return $ocfv->Content;    # do not escape
-                }
-            }
+            return $Article->FirstCustomFieldValue('Content');
         }
 
         # no match was found
