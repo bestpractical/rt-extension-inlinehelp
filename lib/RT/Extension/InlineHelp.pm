@@ -23,25 +23,25 @@ $RT::Config::META{ShowInlineHelp} = {
     use RT::Interface::Web;
     package HTML::Mason::Commands;
 
-    # GetSystemHelpClass locales
+    # GetInlineHelpClass locales
     #
     # Given a list of locales, find the best article class that has been associated with the
-    # 'RT Help System' custom field. Locales are searched in order. The first Class with an
-    # 'RT Help System' custom field and matching 'Locale' custom field will be returned.
+    # 'Inline Help' custom field. Locales are searched in order. The first Class with an
+    # 'Inline Help' custom field and matching 'Locale' custom field will be returned.
 
-    sub GetSystemHelpClass {
+    sub GetInlineHelpClass {
         my $locales = shift || ['en'];
 
-        # Find the custom field that indicates a Class is participating in the RT Help System
+        # Find the custom field that indicates a Class is participating in the Inline Help
         my $cf = RT::CustomField->new( RT->SystemUser );
-        my ( $ret, $msg ) = $cf->Load("RT Help System");
+        my ( $ret, $msg ) = $cf->Load("Inline Help");
         unless ( $ret and $cf->Id ) {
-            RT::Logger->warn("Could not find custom field for 'RT Help System' $msg");
+            RT::Logger->warn("Could not find custom field for 'Inline Help' $msg");
             return;
         }
 
         # Loop over the supplied locales in order. Return the first Class that is participating
-        # in the RT Help System that also has a matching Locale custom field value
+        # in the Inline Help that also has a matching Locale custom field value
         my $Classes = RT::Classes->new( RT->SystemUser );
         ( $ret, $msg ) = $Classes->LimitCustomField( CUSTOMFIELD => $cf->Id, OPERATOR => "=", VALUE => "yes" );
         if ($ret) {
@@ -65,7 +65,7 @@ $RT::Config::META{ShowInlineHelp} = {
     # GetHelpArticleTitle class_id, article_name
     #
     # Returns the value of the C<"Display Name"> Custom Field of an Article of the given Class.
-    # Often, the class_id will come from GetSystemHelpClass, but it does not have to.
+    # Often, the class_id will come from GetInlineHelpClass, but it does not have to.
 
     sub GetHelpArticleTitle {
         my $class_id     = shift || return '';    # required
@@ -86,7 +86,7 @@ $RT::Config::META{ShowInlineHelp} = {
     # GetHelpArticleContent class_id, article_name
     #
     # Returns the raw, unscrubbed and unescaped Content of an Article of the given Class.
-    # Often, the class_id will come from GetSystemHelpClass, but it does not have to.
+    # Often, the class_id will come from GetInlineHelpClass, but it does not have to.
 
     sub GetHelpArticleContent {
         my $class_id     = shift || return '';    # required

@@ -55,7 +55,7 @@ my $help_title;
 if ($Title) {
     my $lh = $session{'CurrentUser'}->LanguageHandle;
     my @locs = ( $lh->language_tag(), $lh->fallback_languages() );
-    my $help_class = GetSystemHelpClass( \@locs );
+    my $help_class = GetInlineHelpClass( \@locs );
     if ($help_class && $help_class->Id) {
         $help_title = GetHelpArticleTitle( $help_class->id, $Title ) || $Title;
         $help_content = GetHelpArticleContent( $help_class->Id, $Title );

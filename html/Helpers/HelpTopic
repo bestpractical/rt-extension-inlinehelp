@@ -57,7 +57,7 @@ my %result;
 if ($title) {
     my $lh = $session{'CurrentUser'}->LanguageHandle;
     my @locs = ( $lh->language_tag(), $lh->fallback_languages() );
-    my $help_class = GetSystemHelpClass( \@locs );
+    my $help_class = GetInlineHelpClass( \@locs );
     $result{content} = GetHelpArticleContent( $help_class->Id, $title ) || "<div class='text-danger'>No help was found for '$title'.</div>";
     $result{title} = GetHelpArticleTitle( $help_class->id, $title ) || $title;
 }

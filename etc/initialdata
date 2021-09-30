@@ -14,8 +14,8 @@ foreach my $lang ( map { s/:://; s/_/-/g; $_ } grep {/^\w+::$/} keys %RT::I18N::
 @lang = sort { $lang_to_desc{$a} cmp $lang_to_desc{$b} } keys %lang_to_desc;
 
 our @CustomFields = (
-    {   Name        => 'RT Help System',
-        Description => 'RT Help System',
+    {   Name        => 'Inline Help',
+        Description => 'Inline Help',
         LookupType  => 'RT::Class',
         Type        => 'Select',
         MaxValues   => 1,
