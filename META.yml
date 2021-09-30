@@ -16,7 +16,10 @@ meta-spec:
 name: RT-Extension-InlineHelp
 no_index:
   directory:
+    - etc
+    - html
     - inc
+    - static
 requires:
   perl: 5.10.1
 resources:
