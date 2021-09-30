@@ -148,6 +148,7 @@ const popupHelpAjax = function() {
                 dataType: "html",
                 success: function(response, statusText, xhr) {
                     jQuery("#" + tmpId).html(xhr.responseText)
+                    $el.data('content', xhr.responseText);
                 },
                 error: function(e) {
                     jQuery("#" + tmpId).html("<div class='text-danger'>Error loading help for '" + title + "': " + e)
