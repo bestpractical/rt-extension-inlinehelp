@@ -170,7 +170,7 @@ function renderPopupHelpItems( list ) {
     list = list || pagePopupHelpItems
     if (list && Array.isArray(list) && list.length) {
         list.forEach(function(entry) {
-            console.log("processing entry:", entry)
+            // console.log("processing entry:", entry)
             const $els = applySelectorQueryOrFunc(entry.selector)
             if ( $els ) {
                 applyPopupHelpAction( entry, $els )
