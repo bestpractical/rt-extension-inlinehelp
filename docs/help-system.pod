@@ -54,9 +54,15 @@ The RT help system can be used at render time on the server. For example,
 in a Mason template, you might use the `PopupHelp` template to annotate a
 form field
 
-    <label for="ticketId">Ticket Id</label>
-    <& /Elements/PopupHelp, key => 'My Topic' &>
-    <input type="text" name="ticketId" />
+    <div class="form-row">
+      <div class="label col-3">
+        <span>Ticket Id</span>
+        <& /Elements/PopupHelp, Title => 'My Topic' &>:
+      </div>
+      <div class="value col-9">
+        <input class="form-control" type="text" name="ticketId" />
+      </div>
+    </div>
 
 The RT help system can also be used at runtime on the client. For example,
 you can also add the same help topic to every HTML element matching a certain
@@ -125,9 +131,15 @@ the help popup following a user click.
 
 To add help to a form field, a Mason template might create a help tag directly,
 
-    <label for="ticketId">Ticket Id</label>
-    <& /Elements/PopupHelp, key => 'My Topic' &>
-    <input type="text" name="ticketId" />
+    <div class="form-row">
+      <div class="label col-3">
+        <span>Ticket Id</span>
+        <& /Elements/PopupHelp, Title => 'My Topic' &>:
+      </div>
+      <div class="value col-9">
+        <input class="form-control" type="text" name="ticketId" />
+      </div>
+    </div>
 
 or might create help tags dynamically based on a Custom Field called Category
 
