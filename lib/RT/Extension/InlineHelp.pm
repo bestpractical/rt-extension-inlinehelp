@@ -165,42 +165,30 @@ To show InlineHelp by default:
 
 =head1 OVERVIEW
 
-RT adds help icons to various elements on pages throughout the application.
-When the user clicks the help icon, a popup dialog will display useful information
-related to that element.
+This extension adds help icons to various elements on pages throughout the
+application.  When the user hovers over the help icon, a popup dialog will
+display useful information related to that element.
 
-The RT Help System can be used in a number of ways:
-
-=over
-
-=item *
-It is used internally by RT for help topics that ship with RT
-
-=item *
-It can be used to modify or augment the help topics that ship with RT
-
-=item *
-It can be used by extension authors to provide help for their extensions in a uniform fashion
-
-=back
+It can be used by extension authors to provide help for their extensions in
+a uniform fashion.
 
 =head2 How it works
 
 Help content is managed as a collection of Articles in specially-designated Classes.
-If a Class has the special C<"RT Help System"> custom field set to C<"yes"> then that Articles
+If a Class has the special C<"Inline Help"> custom field set to C<"yes"> then that Articles
 in that Class are eligible to participate in the lookup of help topics. A second custom
 field called C<"Locale"> will identify the language used by Articles in that Class.
 
-When asked to display help for a particular topic, the RT help system will look for a
-Class that has been tagged as C<"RT Help System"> and has a C<"Locale"> compatible with the
-current user's language setting.
+When asked to display help for a particular topic, it will look for a Class
+that has been tagged as C<"Inline Help"> and has a C<"Locale"> compatible
+with the current user's language setting.
 
 Assuming it finds such a Class, RT will look inside it for an Article with a Name matching
 the help topic.
 
 =head2 Sync vs Async
 
-There are basically two modes of operation for the RT help system: synchronous and
+There are basically two modes of operation for the InlineHelp: synchronous and
 asynchronous.
 
 In synchronous mode, all of the help content is either retrieved or supplied directly on
@@ -208,16 +196,15 @@ the server side when the initial page is rendered. This means that the help cont
 is delivered to the browser.
 
 In asynchronous mode, only the help topic is supplied when the page is rendered. Only when
-the user clicks on the help icon is the help content dynamically retrieved from the server
+the user hovers over the help icon is the help content dynamically retrieved from the server
 and displayed in the popup dialog. See L</Async> for more details.
 
 Both modes can be used interchangeably on the same page.
 
 =head1 USAGE
 
-The RT help system can be used at render time on the server. For example,
-in a Mason template, you might use the `PopupHelp` template to annotate a
-form field
+The InlineHelp can be used at render time on the server. For example, in
+a Mason template, you might use the C<PopupHelp> to annotate a form field:
 
     <div class="form-row">
       <div class="label col-3">
@@ -229,7 +216,7 @@ form field
       </div>
     </div>
 
-The RT help system can also be used at runtime on the client. For example,
+The InlineHelp can also be used at runtime on the client. For example,
 you can also add the same help topic to every HTML element matching a certain
 query. The following would associate a help topic to a specific button
 
@@ -241,7 +228,7 @@ query. The following would associate a help topic to a specific button
 
 =head1 REFERENCE
 
-There are three primary ways to use the RT Help System:
+There are three primary ways to use the Inline Help:
 
 =over
 
@@ -270,7 +257,7 @@ L</Programmatic API>
 
 Add a C</Elements/PopupHelp> component anywhere in a Mason template
 
-    <& /Elements/PopupHelp, key => "My Topic" &>
+    <& /Elements/PopupHelp, Title => "My Topic" &>
 
 This will render an empty HTML span element
 
@@ -290,7 +277,7 @@ altogether.
 
 Because the help content has already been retrieved and sent to the client,
 it will already be in the DOM and there should be virtually no delay when displaying
-the help popup following a user click.
+the help popup following a user hover.
 
 =head3 Example
 
@@ -350,7 +337,7 @@ with some static help content that includes custom HTML
             data-action="after">Save</button>
 
 Or we could omit the C<data-content> altogether to have RT return the help content from the
-matching C<"List Sprockets"> Article when the user clicks the help icon
+matching C<"List Sprockets"> Article when the user hovers over the help icon
 
     <button data-help="List Sprockets" data-action="after">List</button>
 
@@ -436,7 +423,8 @@ C<function( $els ) { ... }>
 
 =item * C<content> - I<String | Array(String)>
 
-Optional. The help content to be displayed in the popup when the user clicks the help icon.
+Optional. The help content to be displayed in the popup when the user hovers
+over the help icon.
 
 If missing, asynchronous mode is automatically triggered (see L</Async>)
 
@@ -595,24 +583,24 @@ help content, using the field text as the help topic.
 
 =head2 Programmatic API
 
-The following functions are part of, and used by, the RT Help System. You can also call them
+The following functions are part of, and used by, the Inline Help. You can also call them
 directly from your code.
 
-=head3 RT::Interface::Web::GetSystemHelpClass( locales )
+=head3 RT::Interface::Web::GetInlineHelpClass( locales )
 
 Given a list of locales, find the best article class that has been associated with the
-C<"RT Help System"> custom field. Locales are searched in order. The first Class with an
-C<"RT Help System"> custom field and matching C<"Locale"> custom field will be returned.
+C<"Inline Help"> custom field. Locales are searched in order. The first Class with an
+C<"Inline Help"> custom field and matching C<"Locale"> custom field will be returned.
 
 =head3 RT::Interface::Web::GetHelpArticleContent( class_id, article_name )
 
 Returns the raw, unscrubbed and unescaped C<Content> of an Article of the given Class.
-Often, the class_id will come from C<GetSystemHelpClass>, but it does not have to.
+Often, the class_id will come from C<GetInlineHelpClass>, but it does not have to.
 
 =head2 Async
 
 In asynchronous mode, only the help topic is supplied when the page is rendered. Only when
-the user clicks on the help icon is the help content dynamically retrieved from the server
+the user hovers over the help icon is the help content dynamically retrieved from the server
 with a second AJAX request to which will attempt to fetch the given help article contents.
 The contents are returned directly as an HTML fragment--that is, they are not wrapped in
 a C<<html>> tag, for example.
@@ -631,13 +619,13 @@ anyway, so the AJAX call would never have been made.
 
 Asynchronous mode does have the benefit of reducing the number of database calls that need
 to be made to retrieve help article content on page request, but the user may experience a
-slight lag when the help icon is clicked and the AJAX request is being made. This will need
+slight lag when the help icon is hovered over and the AJAX request is being made. This will need
 to be evaluated on a case-by-case basis. On a heavily used RT system, the performance of pages
 with many help topics may benefit from using asynchronous mode more generously.
 
 =head1 NAMING
 
-Since the RT help system uses the help topic as the key to find a corresponding Article, it
+Since the InlineHelp uses the help topic as the key to find a corresponding Article, it
 helps to have a somewhat predictable naming convention for help topics.
 
 =head2 RT objects
@@ -713,7 +701,7 @@ use case.
 
 =head1 INTERNATIONALIZATION
 
-The RT help system works with multiple languages by using Articles in Classes. Each Class should
+The InlineHelp works with multiple languages by using Articles in Classes. Each Class should
 have a different value for its C<Locale> Custom Field. All of the articles in that Class should
 be in that language.
 
@@ -726,16 +714,10 @@ Add a Class (for example, via B<Admin E<gt> Articles E<gt> Classes E<gt> Create>
 the Class whatever you want, but something like "Help - <language>" is probaby a good idea for clarity.
 
 =item *
-Associate it with the RT Help System. Find the "RT Help System" Custom Field (for example,
-B<Admin E<gt> Global E<gt> Custom Fields E<gt> Classes>) and apply it to your new Class
+Set "Inline Help" field of the Class to "yes".
 
 =item *
-Associate it with a language. Find the "Locale" Custom Field (for example,
-B<Admin E<gt> Global E<gt> Custom Fields E<gt> Classes>) and apply it to your new Class
-
-=item *
-Set the language. Find your new Class (for example, B<Admin E<gt> Classes E<gt> Select>) and
-set the "Locale" to your <language> in the dropdown
+Set "Locale" of the Class to the language you want.
 
 =item *
 Add articles to your new Class
