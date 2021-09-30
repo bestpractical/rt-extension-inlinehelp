@@ -144,11 +144,15 @@ const popupHelpAjax = function() {
         if (isAsync) {
             const tmpId = "tmp-id-" + jQuery.now()
             jQuery.ajax({
-                url: buildUrl(title), dataType: "html",
-                dataType: "html",
+                url: buildUrl(title),
+                dataType: "json",
                 success: function(response, statusText, xhr) {
-                    jQuery("#" + tmpId).html(xhr.responseText)
-                    $el.data('content', xhr.responseText);
+                    jQuery("#" + tmpId).html(response.content)
+                    $el.data('content', response.content);
+                    $el.attr('data-original-title', response.title);
+                    if ( response.content && title != response.title ) {
+                        $el.popover('show');
+                    }
                 },
                 error: function(e) {
                     jQuery("#" + tmpId).html("<div class='text-danger'>Error loading help for '" + title + "': " + e)
