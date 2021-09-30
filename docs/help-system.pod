@@ -107,7 +107,7 @@ This will render an empty HTML span element
           data-content="The article contents"
           data-action="replace"
           style="display: none;"
-    />
+    ></span>
 
 which will be picked up and processed on page load by the default "helpification"
 rule when all of the accumulated rules are executed when C<renderPopupHelpItems> is
@@ -133,7 +133,7 @@ or might create help tags dynamically based on a Custom Field called Category
 
     % while (my $ticket = $tickets->Next) {
     %   my $ctgy = $ticket->FirstCustomFieldValue("Category")
-    <h1><% $ticket->Subject %></h1><& /Elements/PopupHelp, $key => $ctgy &>
+    <h1><% $ticket->Subject %></h1><& /Elements/PopupHelp, Title => $ctgy &>
     % }
 
 =head2 HTML Attributes
