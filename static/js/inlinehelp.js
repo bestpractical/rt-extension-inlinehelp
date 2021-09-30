@@ -124,7 +124,7 @@ function applyPopupHelpAction( entry, $els ) {
 // popover() method, which is its primary purpose
 const popupHelpAjax = function() {
     const isDefined = function(x) { return typeof x !== "undefined" }
-    const buildUrl = function(key) { return RT.Config.WebHomePath + "/Helpers/HelpTopic?key=" + encodeURIComponent(key) }
+    const buildUrl = function(title) { return RT.Config.WebHomePath + "/Helpers/HelpTopic?title=" + encodeURIComponent(title) }
     const boolVal = function(str) {
         try {
             return !!JSON.parse(str)
@@ -135,7 +135,7 @@ const popupHelpAjax = function() {
     }
 
     const $el = jQuery(this)
-    const key = $el.data("help") || $el.data("title") || $el.data("originalTitle")
+    const title = $el.data("help") || $el.data("title") || $el.data("originalTitle")
     var content = $el.data("content")
     if (content) {
         return content
@@ -144,18 +144,18 @@ const popupHelpAjax = function() {
         if (isAsync) {
             const tmpId = "tmp-id-" + jQuery.now()
             jQuery.ajax({
-                url: buildUrl(key), dataType: "html",
+                url: buildUrl(title), dataType: "html",
                 dataType: "html",
                 success: function(response, statusText, xhr) {
                     jQuery("#" + tmpId).html(xhr.responseText)
                 },
                 error: function(e) {
-                    jQuery("#" + tmpId).html("<div class='text-danger'>Error loading help for '" + key + "': " + e)
+                    jQuery("#" + tmpId).html("<div class='text-danger'>Error loading help for '" + title + "': " + e)
                 }
             })
             return "<div id='" + tmpId + "'>Loading...</div>"
         } else {
-            return "<div class='text-danger'>No help content available for '" + key + "'.</div>"
+            return "<div class='text-danger'>No help content available for '" + title + "'.</div>"
         }
     }
 }

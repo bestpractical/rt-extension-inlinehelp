@@ -46,16 +46,16 @@
 %#
 %# END BPS TAGGED BLOCK }}}
 <%args>
-$key => '',
+$title => ''
 </%args>
 <%init>
 my $help_class;
 my $help_content;
-if ($key) {
+if ($title) {
     my $lh = $session{'CurrentUser'}->LanguageHandle;
     my @locs = ( $lh->language_tag(), $lh->fallback_languages() );
     my $help_class = GetSystemHelpClass( \@locs );
-    $help_content = GetHelpArticleContent( $help_class->Id, $key ) || "<div class='text-danger'>No help was found for '$key'.</div>";
+    $help_content = GetHelpArticleContent( $help_class->Id, $title ) || "<div class='text-danger'>No help was found for '$title'.</div>";
     $m->print($help_content);
 }
 $m->abort;
