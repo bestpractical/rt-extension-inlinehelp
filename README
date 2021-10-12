@@ -41,23 +41,14 @@ OVERVIEW
     the application. When the user hovers over the help icon, a popup dialog
     will display useful information related to that element.
 
-    It can be used by extension authors to provide help for their extensions
-    in a uniform fashion.
-
   How it works
-    Help content is managed as a collection of Articles in
-    specially-designated Classes. If a Class has the special "Inline Help"
-    custom field set to "yes" then that Articles in that Class are eligible
-    to participate in the lookup of help topics. A second custom field
-    called "Locale" will identify the language used by Articles in that
-    Class.
-
-    When asked to display help for a particular topic, it will look for a
-    Class that has been tagged as "Inline Help" and has a "Locale"
-    compatible with the current user's language setting.
-
-    Assuming it finds such a Class, RT will look inside it for an Article
-    with a Name matching the help topic.
+    Help content is managed as a collection of articles in
+    specially-designated classes. If a class has the "Inline Help" custom
+    field set to "yes", then the articles in that class will be used when
+    finding help topics. A second custom field called "Locale" identifies
+    the language used by articles in that class. In these classes, the
+    article names map to parts of the RT interface to determine where to
+    show the article content as help.
 
   Sync vs Async
     There are basically two modes of operation for the InlineHelp:
@@ -68,15 +59,16 @@ OVERVIEW
     This means that the help content itself is delivered to the browser.
 
     In asynchronous mode, only the help topic is supplied when the page is
-    rendered. Only when the user hovers over the help icon is the help
-    content dynamically retrieved from the server and displayed in the popup
-    dialog. See "Async" for more details.
+    rendered. When the user hovers over the help icon, the help content is
+    dynamically retrieved from the server and displayed in the popup dialog.
+    See "Async" for more details.
 
     Both modes can be used interchangeably on the same page.
 
 USAGE
-    The InlineHelp can be used at render time on the server. For example, in
-    a Mason template, you might use the PopupHelp to annotate a form field:
+    InlineHelp can be used at render time on the server. For example, in a
+    Mason template, you might use the PopupHelp template to annotate a form
+    field:
 
         <div class="form-row">
           <div class="label col-3">
@@ -88,10 +80,9 @@ USAGE
           </div>
         </div>
 
-    The InlineHelp can also be used at runtime on the client. For example,
-    you can also add the same help topic to every HTML element matching a
-    certain query. The following would associate a help topic to a specific
-    button
+    InlineHelp can also be used at runtime on the client. For example, you
+    can add the same help topic to every HTML element matching a certain
+    query. The following would associate a help topic to a specific button:
 
         <script>
         jQuery(document).ready(function() {
@@ -108,12 +99,10 @@ REFERENCE
 
     *   "JavaScript"
 
-    Of course, you are also free to use the lower-level contsructs as well.
-
-    *   "Programmatic API"
+    The core API is also available and described in "Programmatic API".
 
   Mason Templates
-    Add a /Elements/PopupHelp component anywhere in a Mason template
+    Add a /Elements/PopupHelp component anywhere in a Mason template:
 
         <& /Elements/PopupHelp, Title => "My Topic" &>
 
@@ -131,7 +120,7 @@ REFERENCE
     component in the page footer).
 
     If no valid help article named My Help Topic is found, (see "OVERVIEW")
-    or the ShowInlineHelp setting/user-preference is falsy the <span> will
+    or the ShowInlineHelp setting/user-preference is false, the <span> will
     be suppressed altogether.
 
     Because the help content has already been retrieved and sent to the
@@ -140,7 +129,7 @@ REFERENCE
 
    Example
     To add help to a form field, a Mason template might create a help tag
-    directly,
+    directly:
 
         <div class="form-row">
           <div class="label col-3">
@@ -153,7 +142,7 @@ REFERENCE
         </div>
 
     or might create help tags dynamically based on a Custom Field called
-    Category
+    Category:
 
         % while (my $ticket = $tickets->Next) {
         %   my $ctgy = $ticket->FirstCustomFieldValue("Category")
@@ -165,7 +154,7 @@ REFERENCE
     content" attributes to any HTML elements.
 
     *   data-help Required. The name of the help topic. If data-content is
-        omitted, content will come from an Article with this Name. Used as
+        omitted, content will come from an article with this Name. Used as
         the title of the popup dialog if data-title is not supplied or if in
         asynchronous mode. See "Async".
 
@@ -189,7 +178,7 @@ REFERENCE
                 data-action="after">Save</button>
 
     Or we could omit the data-content altogether to have RT return the help
-    content from the matching "List Sprockets" Article when the user hovers
+    content from the matching "List Sprockets" article when the user hovers
     over the help icon
 
         <button data-help="List Sprockets" data-action="after">List</button>
@@ -220,12 +209,12 @@ REFERENCE
     This method of using JavaScript allows for tremendous flexibly
     annotating the DOM with help items, even after it has been
     rendered--perhaps by other templates altogether, making it attractive as
-    a mechanism for customers to annotate aspects of RT--however it has been
+    a mechanism for users to annotate aspects of RT--however it has been
     installed for them, including any and all extensions--simply by
     inspecting what is rendered to the browser and writing the appropriate
-    rules. Importantly, these rules can usually be added to *one place*
-    (e.g. in a page callback somewhere) so they do *not* need to overlay
-    virtually every template in RT just to add help icons throughout.
+    rules. Importantly, these rules can usually be added to one place (e.g.
+    in a page callback somewhere) so they do not need to overlay virtually
+    every template in RT just to add help icons throughout.
 
     Note that renderPopupHelpItems does not consider the ShowInlineHelp
     setting/user-preference because it is assumed that the server-side logic
@@ -233,7 +222,7 @@ REFERENCE
     /Elements/PopupHelp component) if ShowInlineHelp was unset.
 
    Help Selector Rules
-    A help selector rule is a JavaScript object with the following keys
+    A help selector rule is a JavaScript object with the following keys:
 
     *   selector - *String | Function*
 
@@ -257,7 +246,7 @@ REFERENCE
         element(s) matching the selector
 
         *   *String* The name of the help topic that should be matched
-            against the Article Name. If the selector matches exactly one
+            against the article Name. If the selector matches exactly one
             element, this will be its help topic. If more than one element
             are matched, they will all get this same help topic.
 
@@ -424,8 +413,8 @@ REFERENCE
         )
 
   Programmatic API
-    The following functions are part of, and used by, the Inline Help. You
-    can also call them directly from your code.
+    The following functions are part of, and used by, InlineHelp. You can
+    also call them directly from your code.
 
    RT::Interface::Web::GetInlineHelpClass( locales )
     Given a list of locales, find the best article class that has been
@@ -469,13 +458,13 @@ REFERENCE
     asynchronous mode more generously.
 
 NAMING
-    Since the InlineHelp uses the help topic as the key to find a
-    corresponding Article, it helps to have a somewhat predictable naming
-    convention for help topics.
+    Since InlineHelp uses the help topic as the key to find a corresponding
+    article, it helps to have a somewhat predictable naming convention for
+    help topics.
 
   RT objects
-    In general, help topics for builtin RT functionality will be prefixed by
-    "RT-"
+    In general, help topics for built-in RT functionality will be prefixed
+    by "RT-"
 
     *   RT-{The Name}
 
@@ -518,24 +507,22 @@ DESIGN CONSIDERATIONS
     the help directly, especially if it has to be constructed in order to do
     so. However, this makes it much more difficult for end users to edit or
     customize the help content (since it now lives in code instead of an
-    Article). It also makes it more difficult to support multiple locales.
-
-    Help authors should choose the method that best balances these
-    considerations for their use case.
+    article). It also makes it more difficult to support multiple locales.
 
 INTERNATIONALIZATION
-    The InlineHelp works with multiple languages by using Articles in
-    Classes. Each Class should have a different value for its Locale Custom
-    Field. All of the articles in that Class should be in that language.
+    InlineHelp works with multiple languages by using articles in classes.
+    Each class should have a different value for its Locale custom field.
+    All of the articles in that class should be in that language.
 
   Adding a new language
-    *   Add a Class (for example, via Admin > Articles > Classes > Create).
-        You can name the Class whatever you want, but something like "Help -
-        <language>" is probaby a good idea for clarity.
+    *   To add a new language, create a new class with the settigns below.
+        You can use any name for the class. If you plan to have several
+        languages, you'll likely want to have consistent naming for your
+        classes.
 
-    *   Set "Inline Help" field of the Class to "yes".
+    *   Set the "Inline Help" custom field to "yes".
 
-    *   Set "Locale" of the Class to the language you want.
+    *   Set "Locale" to the language you want.
 
     *   Add articles to your new Class
 
