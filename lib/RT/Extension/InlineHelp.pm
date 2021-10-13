@@ -430,7 +430,7 @@ Optional. The action that should be taken with each help icon that results from 
 of C<selector>. Responsible for actually adding the help icons to the DOM. This controls, for
 example, where the icon should be rendered relative to the matching DOM element.
 
-If missing, C<"after"> is the default.
+If missing, C<"append"> is the default.
 
 =over
 

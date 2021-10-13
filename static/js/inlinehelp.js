@@ -22,6 +22,9 @@ function helpify($els, item={}, options={}) {
             case "before":
                 $el.before( buildPopupHelpHtml( title, content ) );
                 break;
+            case "after":
+                $el.after( buildPopupHelpHtml( title, content ) );
+                break;
             case "prepend":
                 $el.prepend( buildPopupHelpHtml( title, content ) );
                 break;
@@ -32,11 +35,8 @@ function helpify($els, item={}, options={}) {
                 $el.replaceWith( buildPopupHelpHtml( title, content ) );
                 break;
             case "append":
-                $el.append( buildPopupHelpHtml( title, content ) );
-                break;
-            case "after":  // intentionally fallthrough, as 'after' is the default
             default:
-                $el.parent().append( buildPopupHelpHtml( title, content ) );
+                $el.append( buildPopupHelpHtml( title, content ) );
         }
     })
 }

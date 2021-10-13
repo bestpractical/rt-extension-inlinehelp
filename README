@@ -281,7 +281,7 @@ REFERENCE
         adding the help icons to the DOM. This controls, for example, where
         the icon should be rendered relative to the matching DOM element.
 
-        If missing, "after" is the default.
+        If missing, "append" is the default.
 
         *   *String* A shortcut method for referencing a number of
             predefined action functions. The following values are supported:
