@@ -57,8 +57,8 @@ if ($Title) {
     my @locs = ( $lh->language_tag(), $lh->fallback_languages() );
     my $help_class = GetInlineHelpClass( \@locs );
     if ($help_class && $help_class->Id) {
-        $help_title = GetHelpArticleTitle( $help_class->id, $Title ) || $Title;
-        $help_content = GetHelpArticleContent( $help_class->Id, $Title );
+        $help_title = GetInlineHelpArticleTitle( $help_class->id, $Title ) || $Title;
+        $help_content = GetInlineHelpArticleContent( $help_class->Id, $Title );
     }
     $has_help = $help_content;
 }

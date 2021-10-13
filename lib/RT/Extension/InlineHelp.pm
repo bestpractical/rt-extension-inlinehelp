@@ -62,12 +62,12 @@ $RT::Config::META{ShowInlineHelp} = {
         return;
     }
 
-    # GetHelpArticleTitle class_id, article_name
+    # GetInlineHelpArticleTitle class_id, article_name
     #
     # Returns the value of the C<"Display Name"> Custom Field of an Article of the given Class.
     # Often, the class_id will come from GetInlineHelpClass, but it does not have to.
 
-    sub GetHelpArticleTitle {
+    sub GetInlineHelpArticleTitle {
         my $class_id     = shift || return '';    # required
         my $article_name = shift || return '';    # required
 
@@ -83,12 +83,12 @@ $RT::Config::META{ShowInlineHelp} = {
         return '';
     }
 
-    # GetHelpArticleContent class_id, article_name
+    # GetInlineHelpArticleContent class_id, article_name
     #
     # Returns the raw, unscrubbed and unescaped Content of an Article of the given Class.
     # Often, the class_id will come from GetInlineHelpClass, but it does not have to.
 
-    sub GetHelpArticleContent {
+    sub GetInlineHelpArticleContent {
         my $class_id     = shift || return '';    # required
         my $article_name = shift || return '';    # required
 
