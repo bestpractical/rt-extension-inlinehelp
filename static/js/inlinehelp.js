@@ -28,9 +28,6 @@ function helpify($els, item={}, options={}) {
             case "prepend":
                 $el.prepend( buildPopupHelpHtml( title, content ) );
                 break;
-            case "offset":
-                $el.append( buildPopupHelpHtml( title, content ) ).offset( options );
-                break;
             case "replace":
                 $el.replaceWith( buildPopupHelpHtml( title, content ) );
                 break;
