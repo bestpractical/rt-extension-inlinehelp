@@ -91,7 +91,9 @@ USAGE
         </script>
 
 REFERENCE
-    There are three primary ways to use the Inline Help:
+    There are four primary ways to use the Inline Help:
+
+    *   "Target Selector"
 
     *   "Mason Templates"
 
@@ -99,7 +101,11 @@ REFERENCE
 
     *   "JavaScript"
 
-    The core API is also available and described in "Programmatic API".
+  Target Selector
+    With this approach, you won't need to write any Mason/HTML/JS code, all
+    you need to do is to specify the elements(using jQuery selector syntax)
+    in aritlces' Target custom field, and the inline help will show up
+    automatically.
 
   Mason Templates
     Add a /Elements/PopupHelp component anywhere in a Mason template:
@@ -154,12 +160,8 @@ REFERENCE
     content" attributes to any HTML elements.
 
     *   data-help Required. The name of the help topic. If data-content is
-        omitted, content will come from an article with this Name. Used as
-        the title of the popup dialog if data-title is not supplied or if in
-        asynchronous mode. See "Async".
-
-    *   data-title Optional. The title to use for the popup dialog box. If
-        omitted, data-help will be used.
+        omitted, content will come from an article with this Name. See
+        "Async".
 
     *   data-content Optional. The help content. If omitted, asynchronous
         mode will be used to dynamically retrieve the help content. See
@@ -174,7 +176,7 @@ REFERENCE
     with some static help content that includes custom HTML
 
         <button data-help="Save Widget"
-                data-content='Saves the <font color="red">Widget</font> to RT'
+                data-content="Saves the Widget to RT"
                 data-action="after">Save</button>
 
     Or we could omit the data-content altogether to have RT return the help
@@ -201,7 +203,7 @@ REFERENCE
 
     This includes the default rule
 
-        { selector: "[data-help]", action: helpify }
+        { selector: "[data-help]" }
 
     which matches anything with a data-help attribute and therefore powers
     the "HTML Attributes" method.
@@ -216,15 +218,10 @@ REFERENCE
     in a page callback somewhere) so they do not need to overlay virtually
     every template in RT just to add help icons throughout.
 
-    Note that renderPopupHelpItems does not consider the ShowInlineHelp
-    setting/user-preference because it is assumed that the server-side logic
-    would already have omitted the JavaScript call altogether (e.g. via the
-    /Elements/PopupHelp component) if ShowInlineHelp was unset.
-
    Help Selector Rules
     A help selector rule is a JavaScript object with the following keys:
 
-    *   selector - *String | Function*
+    *   selector - *String*
 
         Required. Defines which DOM elements should receive a help icon. Can
         match 0, 1, or many elements. Selectors matching 0 elements have no
@@ -233,14 +230,7 @@ REFERENCE
         *   *String* A JQuery selector string that defines the matching DOM
             elements
 
-        *   *Function*
-
-            A JavaScript function that will be passed an instance of the
-            JQuery object and should return a JQuery collection of matching
-            DOM elements. That is, the function signature is function(
-            jQuery ) { ... }
-
-    *   title - *String | Array(String) | Function*
+    *   title - *String*
 
         Optional. The help topic(s) that should be associated with the
         element(s) matching the selector
@@ -250,16 +240,7 @@ REFERENCE
             element, this will be its help topic. If more than one element
             are matched, they will all get this same help topic.
 
-        *   *Array(String)* An array of help topic names. They will be
-            applied in order corresponding to the elements returned by the
-            selector
-
-        *   *Function* A JavaScript function that will be called with the
-            elements matched by the selector that should return the help
-            topic for that element. That is, the function signagure is
-            function( $els ) { ... }
-
-    *   content - *String | Array(String)*
+    *   content - *String*
 
         Optional. The help content to be displayed in the popup when the
         user hovers over the help icon.
@@ -270,11 +251,7 @@ REFERENCE
         *   *String* The help content. May contain HTML. Will be applied for
             all elements matched by selector.
 
-        *   *Array(String)* Each member of the array will be applied to each
-            corresponding member of the array of elements matched by
-            selector.
-
-    *   action - *String | Function*
+    *   action - *String*
 
         Optional. The action that should be taken with each help icon that
         results from the application of selector. Responsible for actually
@@ -283,8 +260,7 @@ REFERENCE
 
         If missing, "append" is the default.
 
-        *   *String* A shortcut method for referencing a number of
-            predefined action functions. The following values are supported:
+        *   *String*
 
             *   *before* The help icon will be prepended to the DOM *before*
                 the element(s) matched by selector
@@ -302,19 +278,6 @@ REFERENCE
                 place of* the element(s) matched by selector. This action is
                 used, for example, by the /Elements/PopupHelp Mason
                 component.
-
-            *   *offset* The help icon will be offset from the element(s)
-                matched by selector by the amounts communicated in
-                actionArgs. Works with the JQuery offset method and takes an
-                object parameter with coordinate keys { top: 10, left: 20 }
-
-        *   *Function* A JavaScript function responsible for actually adding
-            the help icons to the DOM. Will be called for each element
-            matched by the selector. The function signature is function(
-            $el, rule, actionArgs )
-
-    *   actionArgs - Array Any additional arguments that should be passed to
-        the action function.
 
    Examples
     Add a help topic named "My Topic" to the DOM element with an id of
@@ -350,65 +313,14 @@ REFERENCE
 
         addPopupHelpItems( { selector: "button[type='submit']", title: "A Note on Submitting Forms" } )
 
-    Find every <div> element with a "heading" class, and add a help topic
-    named "One" to the first one, "Two" to the second one, and "Three" to
-    the third one.
-
-        addPopupHelpItems( { selector: "div.heading", title: [ "One", "Two", "Three" ]} )
-
-    Use a custom selector function to match divs that have ids starting with
-    "ACME-" but only when not working locally in developer mode. Determine
-    the article title from the matching ids by stripping off the "ACME-"
-    portion
-
-        var acmeDivs = function( jQuery ) {
-            if (location.hostname != "localhost") {
-                return jQuery("div").filter(function($el) {
-                    return $el.id.startsWith("ACME-")
-                })
-            }
-        }
-
-        var makeTitle = function( el ) {
-            return el.id.replace("ACME-", "")
-        }
-
-        addPopupHelpItems(
-            {
-                selector: acmeDivs,
-                title:    makeTitle
-            }
-        )
-
     Prepend help topics to all form radio buttons
 
         addPopupHelpItems(
             {
                 selector: "form input[type='radio']",
-                topic:    "Radio Button Help",
+                title:    "Radio Button Help",
                 content:  "You can only select one at a time",
                 action:   "prepend"
-            }
-        )
-
-    Provide help for every field in each section on a ticket display page,
-    but place each help icon in a line at the top of its respective section.
-    Use asynchronous mode for help content, using the field text as the help
-    topic.
-
-        var sectionInsert = function( $els, rule, options ) {
-            $els.each(function(i,el) {
-                const $el = jQuery(el)
-                const $a = $el.closest(".titlebox").find(".titlebox-title.card-header a")
-                const fieldName = $el.text().replace(":", "")
-                $a.append( buildPopupHelpHtml( fieldName ) )
-            })
-        }
-
-        addPopupHelpItems(
-            {
-                selector: ".titlebox .card-body .form-row .label",
-                action:   sectionInsert
             }
         )
 
@@ -416,16 +328,19 @@ REFERENCE
     The following functions are part of, and used by, InlineHelp. You can
     also call them directly from your code.
 
-   RT::Interface::Web::GetInlineHelpClass( locales )
+   HTML::Mason::Commands::GetInlineHelpClass( locales )
     Given a list of locales, find the best article class that has been
     associated with the "Inline Help" custom field. Locales are searched in
     order. The first Class with an "Inline Help" custom field and matching
     "Locale" custom field will be returned.
 
-   RT::Interface::Web::GetHelpArticleContent( class_id, article_name )
+   HTML::Mason::Commands::GetInlineHelpArticleTitle( class_id, article_name )
+    Returns the value of the Display Name Custom Field of an Article of the
+    given Class.
+
+   HTML::Mason::Commands::GetInlineHelpArticleContent( class_id, article_name )
     Returns the raw, unscrubbed and unescaped Content of an Article of the
-    given Class. Often, the class_id will come from GetInlineHelpClass, but
-    it does not have to.
+    given Class.
 
   Async
     In asynchronous mode, only the help topic is supplied when the page is
