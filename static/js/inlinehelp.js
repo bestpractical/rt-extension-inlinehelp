@@ -111,7 +111,7 @@ function helpify($els, item={}, options={}) {
 
 function buildPopupHelpHtml(title, content) {
     const contentAttr = content ? ' data-content="' + content + '" ' : '';
-    return '<a class="popup-help" tabindex="0" role="button" data-toggle="popover" title="' + title + '" data-trigger="hover" ' + contentAttr + '><span class="far fa-question-circle fa-lg"></span></a>';
+    return '<span class="popup-help" tabindex="0" role="button" data-toggle="popover" title="' + title + '" data-trigger="hover" ' + contentAttr + '><span class="far fa-question-circle"></span></span>';
 }
 
 function applyPopupHelpAction( entry, $els ) {
