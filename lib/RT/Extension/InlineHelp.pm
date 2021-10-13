@@ -600,6 +600,25 @@ to do so. However, this makes it much more difficult for end users to edit or cu
 help content (since it now lives in code instead of an article). It also makes it more
 difficult to support multiple locales.
 
+=head1 MISC
+
+=head2 Change Icon Size
+
+By default the icon size is inherited from its parent, to customize it, you
+can add css rules on Admin Theme page like:
+
+    span.popup-help {
+        font-size: larger;
+    }
+
+    span.popup-help {
+        font-size: smaller;
+    }
+
+    span.popup-help {
+        font-size: 12px;
+    }
+
 =head1 INTERNATIONALIZATION
 
 InlineHelp works with multiple languages by using articles in classes. Each class should
