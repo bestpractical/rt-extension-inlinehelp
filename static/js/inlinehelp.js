@@ -1,6 +1,6 @@
 // a list of entries to process for the page
 var pagePopupHelpItems = [
-    { selector: "[data-help]", action: helpify }  // by default, anything with data-help attributes gets processed
+    { selector: "[data-help]" }  // by default, anything with data-help attributes gets processed
 ];
 
 if ( RT.CurrentUser.InlineHelp ) {
