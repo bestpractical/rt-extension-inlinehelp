@@ -9,82 +9,14 @@ if ( RT.CurrentUser.InlineHelp ) {
 
 // add one or more items to the list of help entries to process for the page
 function addPopupHelpItems() {
-    const args = [].slice.call(arguments).reduce(function(acc,val) { return acc.concat(val) }, [] );
-    pagePopupHelpItems = pagePopupHelpItems || [];
-    pagePopupHelpItems = pagePopupHelpItems.concat(args);
-}
-
-function applySelectorQueryOrFunc( sel ) {
-    if ( sel ) {
-        if ( typeof(sel) === "string" ) {
-            return jQuery(sel);
-        } else if ( typeof(sel) === "function" ) {
-            return sel(jQuery);
-        }
-    }
-}
-
-function getPopupHelpAction( entry={} ) {
-    entry.action = entry.action || "append"
-    if ( typeof(entry.action) === "string" ) {
-        const funcMap = {
-            "before": beforePopupHelp,
-            "after": afterPopupHelp,
-            "append": appendPopupHelp,
-            "prepend": prependPopupHelp,
-            "offset": offsetPopupHelp,
-            "replace": replacePopupHelp
-        }
-        if (funcMap.hasOwnProperty(entry.action)) {
-            return funcMap[entry.action];
-        } else {
-            console.error("Unknown action '" + entry.action + "' using 'after' instead");
-            return funcMap.after;
-        }
-    } else if ( typeof(entry.action) === "function" ) {
-        return entry.action;
-    }
-}
-
-function getPopupHelpActionArgs( entry={}, $els ) {
-    return entry.actionArgs ? [ $els, entry, entry.actionArgs ] : [ $els, entry ];
-}
-
-function beforePopupHelp( $els, item={}, options={} ) {
-    item.action = options.action = "before";
-    return helpify( $els, item, options );
-}
-
-function afterPopupHelp( $els, item={}, options={} ) {
-    item.action = options.action = "after";
-    return helpify( $els, item, options );
-}
-
-function appendPopupHelp( $els, item={}, options={} ) {
-    item.action = options.action = "append";
-    return helpify( $els, item, options );
-}
-
-function prependPopupHelp( $els, item={}, options={} ) {
-    item.action = options.action = "prepend";
-    return helpify( $els, item, options );
-}
-
-function offsetPopupHelp( $els, item={}, options={} ) {
-    item.action = options.action = "offset";
-    return helpify( $els, item, options );
-}
-
-function replacePopupHelp( $els, item={}, options={} ) {
-    item.action = options.action = "replace";
-    return helpify( $els, item, options );
+    pagePopupHelpItems = pagePopupHelpItems.concat([].slice.call(arguments));
 }
 
 function helpify($els, item={}, options={}) {
     $els.each(function(index) {
-        const $el = jQuery($els.get(index));
+        const $el = jQuery(this);
         const action = $el.data("action") || item.action || options.action;
-        const title = $el.data("title") || item.title || $el.data("help");
+        const title = $el.data("help") || $el.data("title") || item.title;
         const content = $el.data("content") || item.content;
         switch(action) {
             case "before":
@@ -114,58 +46,30 @@ function buildPopupHelpHtml(title, content) {
     return '<span class="popup-help" tabindex="0" role="button" data-toggle="popover" title="' + title + '" data-trigger="hover" ' + contentAttr + '><span class="far fa-question-circle"></span></span>';
 }
 
-function applyPopupHelpAction( entry, $els ) {
-    if ( entry ) {
-        const fn = getPopupHelpAction( entry );
-        const args = getPopupHelpActionArgs( entry, $els );
-        fn.apply(this, args);
-    }
-}
-
 // Dynamically load the help topic corresponding to a DOM element using AJAX
 // Should be called with the DOM element as the 'this' context of the function,
 // making it directly compatible with the 'content' property of the popper.js
 // popover() method, which is its primary purpose
 const popupHelpAjax = function() {
-    const isDefined = function(x) { return typeof x !== "undefined" };
-    const buildUrl = function(title) { return RT.Config.WebHomePath + "/Helpers/HelpTopic?title=" + encodeURIComponent(title) };
-    const boolVal = function(str) {
-        try {
-            return !!JSON.parse(str);
-        }
-        catch {
-            return false;
-        }
-    }
-
     const $el = jQuery(this);
-    const title = $el.data("help") || $el.data("title") || $el.data("originalTitle");
     var content = $el.data("content");
     if (content) {
         return content;
     } else {
-        const isAsync = isDefined($el.data("async")) ? boolVal($el.data("async")) : true;
-        if (isAsync) {
-            const tmpId = "tmp-id-" + jQuery.now();
-            jQuery.ajax({
-                url: buildUrl(title),
-                dataType: "json",
-                success: function(response, statusText, xhr) {
-                    jQuery("#" + tmpId).html(response.content);
-                    $el.data('content', response.content);
-                    $el.attr('data-original-title', response.title);
-                    if ( response.content && title != response.title ) {
-                        $el.popover('show');
-                    }
-                },
-                error: function(e) {
-                    jQuery("#" + tmpId).html("<div class='text-danger'>Error loading help for '" + title + "': " + e);
-                }
-            })
-            return "<div id='" + tmpId + "'>Loading...</div>";
-        } else {
-            return "<div class='text-danger'>No help content available for '" + title + "'.</div>";
-        }
+        const buildUrl = function(title) { return RT.Config.WebHomePath + "/Helpers/HelpTopic?title=" + encodeURIComponent(title) };
+        const title = $el.data("help") || $el.data("title") || $el.data("original-title");
+        jQuery.ajax({
+            url: buildUrl(title),
+            dataType: "json",
+            success: function(response, statusText, xhr) {
+                $el.data('content', response.content);
+                $el.popover('show');
+            },
+            error: function(e) {
+                return "<div class='text-danger'>Error loading help for '" + title + "': " + e + "</div>";
+            }
+        })
+        return RT.I18N.Catalog.loading;
     }
 }
 
@@ -174,11 +78,7 @@ function renderPopupHelpItems( list ) {
     list = list || pagePopupHelpItems;
     if (list && Array.isArray(list) && list.length) {
         list.forEach(function(entry) {
-            // console.log("processing entry:", entry)
-            const $els = applySelectorQueryOrFunc(entry.selector);
-            if ( $els ) {
-                applyPopupHelpAction( entry, $els );
-            }
+            helpify(jQuery(entry.selector), entry);
         });
         jQuery('[data-toggle="popover"]').popover({
             trigger: 'hover',
