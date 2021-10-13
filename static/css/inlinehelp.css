@@ -5,3 +5,7 @@
 .darkmode .popover-header {
     border-bottom: 1px solid rgba(255, 255, 255, 0.6);
 }
+
+.popup-help {
+    margin-left: 5px;
+}
