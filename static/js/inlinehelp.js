@@ -3,6 +3,10 @@ var pagePopupHelpItems = [
     { selector: "[data-help]", action: helpify }  // by default, anything with data-help attributes gets processed
 ];
 
+if ( RT.CurrentUser.InlineHelp ) {
+    pagePopupHelpItems = pagePopupHelpItems.concat(RT.CurrentUser.InlineHelp);
+}
+
 // add one or more items to the list of help entries to process for the page
 function addPopupHelpItems() {
     const args = [].slice.call(arguments).reduce(function(acc,val) { return acc.concat(val) }, [] );

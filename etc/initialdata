@@ -34,4 +34,10 @@ our @CustomFields = (
         Type        => 'Freeform',
         MaxValues   => 1,
     },
+    {   Name        => 'Target',
+        Description => 'jQuery Selector',
+        LookupType  => 'RT::Class-RT::Article',
+        Type        => 'Freeform',
+        MaxValues   => 1,
+    },
 );
