@@ -69,4 +69,22 @@ our @OCFVs = (
     },
 );
 
+our @Final = (
+    sub {
+        my $cf = RT::CustomField->new( RT->SystemUser );
+        $cf->LoadByName( Name => 'Content', LookupType => RT::Article->CustomFieldLookupType );
+        die 'Failed to load Content customfield' unless $cf->Id;
+
+        return if $cf->IsGlobal;
+
+        my $help_class = RT::Class->new( RT->SystemUser );
+        $help_class->Load('Inline Help');
+
+        if ( !$cf->IsAdded( $help_class->Id ) ) {
+            my ( $ret, $msg ) = $cf->AddToObject($help_class);
+            die $msg unless $ret;
+        }
+    },
+);
+
 1;
