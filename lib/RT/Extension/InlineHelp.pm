@@ -239,10 +239,36 @@ L</JavaScript>
 
 =head2 Target Selector
 
-With this approach, you won't need to write any Mason/HTML/JS code, all you
-need to do is to specify the elements(using jQuery selector syntax) in
-aritlces' C<Target> custom field, and the inline help will show up
-automatically.
+With this approach, you don't need to write any Mason/HTML/JS code and
+you can add new help topics by adding or updating articles via the RT web UI.
+Articles in the Inline Help class will have a custom field called Target
+applied to them. To add inline help to some element in RT, specify
+the HTML elements of that element in the Target field, using jQuery
+selector syntax. jQuery is very flexible, so you can use many elements
+in the DOM to target elements including ids, classes, and even text.
+Once you get the selector to match, the content of that article will
+show up in the web UI on that location.
+
+=head3 Examples
+
+Below are some examples of the Target value you would use to add
+help text to different parts of RT.
+
+=over
+
+=item "Search" in the main top menu
+
+Target: C<#search>
+
+=item Ticket display page, Status label
+
+Target: C<div.form-row.status div.label>
+
+=item RT at a glance, Unowned tickets portlet
+
+Target: C<.titlebox .titlebox-title span.left a[href^="/Search/Results.html"]:contains("newest unowned tickets")>
+
+=back
 
 =head2 Mason Templates
 
