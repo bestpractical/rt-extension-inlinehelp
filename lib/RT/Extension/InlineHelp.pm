@@ -62,12 +62,11 @@ $RT::Config::META{ShowInlineHelp} = {
         return;
     }
 
-    # GetHelpArticleTitle class_id, article_name
+    # GetInlineHelpArticleTitle class_id, article_name
     #
-    # Returns the value of the C<"Display Name"> Custom Field of an Article of the given Class.
-    # Often, the class_id will come from GetInlineHelpClass, but it does not have to.
+    # Returns the value of the C<Display Name> Custom Field of an Article of the given Class.
 
-    sub GetHelpArticleTitle {
+    sub GetInlineHelpArticleTitle {
         my $class_id     = shift || return '';    # required
         my $article_name = shift || return '';    # required
 
@@ -83,12 +82,11 @@ $RT::Config::META{ShowInlineHelp} = {
         return '';
     }
 
-    # GetHelpArticleContent class_id, article_name
+    # GetInlineHelpArticleContent class_id, article_name
     #
     # Returns the raw, unscrubbed and unescaped Content of an Article of the given Class.
-    # Often, the class_id will come from GetInlineHelpClass, but it does not have to.
 
-    sub GetHelpArticleContent {
+    sub GetInlineHelpArticleContent {
         my $class_id     = shift || return '';    # required
         my $article_name = shift || return '';    # required
 
@@ -221,9 +219,12 @@ query. The following would associate a help topic to a specific button:
 
 =head1 REFERENCE
 
-There are three primary ways to use the Inline Help:
+There are four primary ways to use the Inline Help:
 
 =over
+
+=item *
+L</Target Selector>
 
 =item *
 L</Mason Templates>
@@ -236,7 +237,12 @@ L</JavaScript>
 
 =back
 
-The core API is also available and described in L</Programmatic API>.
+=head2 Target Selector
+
+With this approach, you won't need to write any Mason/HTML/JS code, all you
+need to do is to specify the elements(using jQuery selector syntax) in
+aritlces' C<Target> custom field, and the inline help will show up
+automatically.
 
 =head2 Mason Templates
 
@@ -295,12 +301,7 @@ attributes to any HTML elements.
 =item * C<data-help>
 Required. The name of the help topic. If C<data-content>
 is omitted, content will come from an article with this Name.
-Used as the title of the popup dialog if C<data-title> is not supplied or if in
-asynchronous mode. See L</Async>.
-
-=item * C<data-title>
-Optional. The title to use for the popup dialog box. If omitted, C<data-help> will
-be used.
+See L</Async>.
 
 =item * C<data-content>
 Optional. The help content. If omitted, asynchronous mode will be used to dynamically retrieve
@@ -318,7 +319,7 @@ A Mason template might add the C<data-help> attribute to an element along
 with some static help content that includes custom HTML
 
     <button data-help="Save Widget"
-            data-content='Saves the <font color="red">Widget</font> to RT'
+            data-content="Saves the Widget to RT"
             data-action="after">Save</button>
 
 Or we could omit the C<data-content> altogether to have RT return the help content from the
@@ -343,7 +344,7 @@ component in the page footer).
 
 This includes the default rule
 
-    { selector: "[data-help]", action: helpify }
+    { selector: "[data-help]" }
 
 which matches anything with a C<data-help> attribute and therefore powers the L</HTML Attributes>
 method.
@@ -356,17 +357,13 @@ appropriate rules. Importantly, these rules can usually be added to one place (e
 callback somewhere) so they do not need to overlay virtually every template in RT just to
 add help icons throughout.
 
-Note that C<renderPopupHelpItems> does not consider the C<ShowInlineHelp> setting/user-preference because
-it is assumed that the server-side logic would already have omitted the JavaScript call altogether
-(e.g. via the C</Elements/PopupHelp> component) if C<ShowInlineHelp> was unset.
-
 =head3 Help Selector Rules
 
 A help selector rule is a JavaScript object with the following keys:
 
 =over
 
-=item * C<selector> - I<String | Function>
+=item * C<selector> - I<String>
 
 Required. Defines which DOM elements should receive a help icon. Can match 0, 1, or many elements.
 Selectors matching 0 elements have no impact on the DOM.
@@ -376,15 +373,9 @@ Selectors matching 0 elements have no impact on the DOM.
 =item * I<String>
 A JQuery selector string that defines the matching DOM elements
 
-=item * I<Function>
-
-A JavaScript function that will be passed an instance of the C<JQuery> object and should
-return a JQuery collection of matching DOM elements. That is, the function signature
-is C<function( jQuery ) { ... }>
-
 =back
 
-=item * C<title> - I<String | Array(String) | Function>
+=item * C<title> - I<String>
 
 Optional. The help topic(s) that should be associated with the element(s) matching the C<selector>
 
@@ -395,18 +386,9 @@ The name of the help topic that should be matched against the article Name. If t
 matches exactly one element, this will be its help topic. If more than one element are
 matched, they will all get this same help topic.
 
-=item * I<Array(String)>
-An array of help topic names. They will be applied in order corresponding to the elements
-returned by the C<selector>
-
-=item * I<Function>
-A JavaScript function that will be called with the elements matched by the C<selector> that
-should return the help topic for that element. That is, the function signagure is
-C<function( $els ) { ... }>
-
 =back
 
-=item * C<content> - I<String | Array(String)>
+=item * C<content> - I<String>
 
 Optional. The help content to be displayed in the popup when the user hovers
 over the help icon.
@@ -418,25 +400,19 @@ If missing, asynchronous mode is automatically triggered (see L</Async>)
 =item * I<String>
 The help content. May contain HTML. Will be applied for all elements matched by C<selector>.
 
-=item * I<Array(String)>
-Each member of the array will be applied to each corresponding member of the array of
-elements matched by C<selector>.
-
 =back
 
-=item * C<action> - I<String | Function>
+=item * C<action> - I<String>
 
 Optional. The action that should be taken with each help icon that results from the application
 of C<selector>. Responsible for actually adding the help icons to the DOM. This controls, for
 example, where the icon should be rendered relative to the matching DOM element.
 
-If missing, C<"after"> is the default.
+If missing, C<"append"> is the default.
 
 =over
 
 =item * I<String>
-A shortcut method for referencing a number of predefined action functions. The following values
-are supported:
 
 =over
 
@@ -456,21 +432,9 @@ The help icon will be prepended to the beginning of the DOM element(s) matched b
 The help icon will be inserted into the DOM I<in place of> the element(s) matched by C<selector>.
 This action is used, for example, by the C</Elements/PopupHelp> Mason component.
 
-=item * I<offset>
-The help icon will be offset from the element(s) matched by C<selector> by the amounts
-communicated in C<actionArgs>. Works with the JQuery C<offset> method and takes an object
-parameter with coordinate keys C<{ top: 10, left: 20 }>
-
 =back
 
-=item * I<Function>
-A JavaScript function responsible for actually adding the help icons to the DOM. Will be called
-for each element matched by the C<selector>. The function signature is C<function( $el, rule, actionArgs )>
-
 =back
-
-=item * C<actionArgs> - Array
-Any additional arguments that should be passed to the C<action> function.
 
 =back
 
@@ -507,62 +471,14 @@ of type C<submit>.
 
     addPopupHelpItems( { selector: "button[type='submit']", title: "A Note on Submitting Forms" } )
 
-Find every C<E<lt>divE<gt>> element with a C<"heading"> class, and add a help topic named
-C<"One"> to the first one, C<"Two"> to the second one, and C<"Three"> to the third one.
-
-    addPopupHelpItems( { selector: "div.heading", title: [ "One", "Two", "Three" ]} )
-
-Use a custom C<selector> function to match divs that have ids starting with C<"ACME-"> but only when
-not working locally in developer mode. Determine the article title from the matching ids by stripping
-off the C<"ACME-"> portion
-
-    var acmeDivs = function( jQuery ) {
-        if (location.hostname != "localhost") {
-            return jQuery("div").filter(function($el) {
-                return $el.id.startsWith("ACME-")
-            })
-        }
-    }
-
-    var makeTitle = function( el ) {
-        return el.id.replace("ACME-", "")
-    }
-
-    addPopupHelpItems(
-        {
-            selector: acmeDivs,
-            title:    makeTitle
-        }
-    )
-
 Prepend help topics to all form radio buttons
 
     addPopupHelpItems(
         {
             selector: "form input[type='radio']",
-            topic:    "Radio Button Help",
+            title:    "Radio Button Help",
             content:  "You can only select one at a time",
             action:   "prepend"
-        }
-    )
-
-Provide help for every field in each section on a ticket display page, but place each
-help icon in a line at the top of its respective section. Use asynchronous mode for
-help content, using the field text as the help topic.
-
-    var sectionInsert = function( $els, rule, options ) {
-        $els.each(function(i,el) {
-            const $el = jQuery(el)
-            const $a = $el.closest(".titlebox").find(".titlebox-title.card-header a")
-            const fieldName = $el.text().replace(":", "")
-            $a.append( buildPopupHelpHtml( fieldName ) )
-        })
-    }
-
-    addPopupHelpItems(
-        {
-            selector: ".titlebox .card-body .form-row .label",
-            action:   sectionInsert
         }
     )
 
@@ -571,16 +487,19 @@ help content, using the field text as the help topic.
 The following functions are part of, and used by, InlineHelp. You can also call them
 directly from your code.
 
-=head3 RT::Interface::Web::GetInlineHelpClass( locales )
+=head3 HTML::Mason::Commands::GetInlineHelpClass( locales )
 
 Given a list of locales, find the best article class that has been associated with the
 C<"Inline Help"> custom field. Locales are searched in order. The first Class with an
 C<"Inline Help"> custom field and matching C<"Locale"> custom field will be returned.
 
-=head3 RT::Interface::Web::GetHelpArticleContent( class_id, article_name )
+=head3 HTML::Mason::Commands::GetInlineHelpArticleTitle( class_id, article_name )
+
+Returns the value of the C<Display Name> Custom Field of an Article of the given Class.
+
+=head3 HTML::Mason::Commands::GetInlineHelpArticleContent( class_id, article_name )
 
 Returns the raw, unscrubbed and unescaped C<Content> of an Article of the given Class.
-Often, the class_id will come from C<GetInlineHelpClass>, but it does not have to.
 
 =head2 Async
 
@@ -680,6 +599,25 @@ often convenient to provide the help directly, especially if it has to be constr
 to do so. However, this makes it much more difficult for end users to edit or customize the
 help content (since it now lives in code instead of an article). It also makes it more
 difficult to support multiple locales.
+
+=head1 MISC
+
+=head2 Change Icon Size
+
+By default the icon size is inherited from its parent, to customize it, you
+can add css rules on Admin Theme page like:
+
+    span.popup-help {
+        font-size: larger;
+    }
+
+    span.popup-help {
+        font-size: smaller;
+    }
+
+    span.popup-help {
+        font-size: 12px;
+    }
 
 =head1 INTERNATIONALIZATION
 

@@ -33,5 +33,58 @@ our @CustomFields = (
         LookupType  => 'RT::Class-RT::Article',
         Type        => 'Freeform',
         MaxValues   => 1,
+        ApplyTo     => 'Inline Help',
+    },
+    {   Name        => 'Target',
+        Description => 'jQuery Selector',
+        LookupType  => 'RT::Class-RT::Article',
+        Type        => 'Freeform',
+        MaxValues   => 1,
+        ApplyTo     => 'Inline Help',
     },
 );
+
+our @Classes = (
+    {   Name        => 'Inline Help',
+        Description => 'Inline help',
+    }
+);
+
+our @OCFVs = (
+    {   Object => sub {
+            my $object = RT::Class->new( RT->SystemUser );
+            $object->Load('Inline Help');
+            return $object;
+        },
+        Field => 'Inline Help',
+        Value => 'yes',
+    },
+    {   Object => sub {
+            my $object = RT::Class->new( RT->SystemUser );
+            $object->Load('Inline Help');
+            return $object;
+        },
+        Field => 'Locale',
+        Value => 'en',
+    },
+);
+
+our @Final = (
+    sub {
+        my $cf = RT::CustomField->new( RT->SystemUser );
+        $cf->LoadByName( Name => 'Content', LookupType => RT::Article->CustomFieldLookupType );
+        die 'Failed to load Content customfield' unless $cf->Id;
+
+        return if $cf->IsGlobal;
+
+        my $help_class = RT::Class->new( RT->SystemUser );
+        $help_class->Load('Inline Help');
+
+        if ( !$cf->IsAdded( $help_class->Id ) ) {
+            my ( $ret, $msg ) = $cf->AddToObject($help_class);
+            die $msg unless $ret;
+        }
+    },
+);
+
+1;

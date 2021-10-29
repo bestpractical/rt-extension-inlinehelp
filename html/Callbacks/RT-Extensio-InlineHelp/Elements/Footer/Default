@@ -6,3 +6,7 @@ jQuery(function() {
     renderPopupHelpItems();
 });
 </script>
+
+<%INIT>
+return unless RT->Config->Get('ShowInlineHelp', $session{CurrentUser});
+</%INIT>
