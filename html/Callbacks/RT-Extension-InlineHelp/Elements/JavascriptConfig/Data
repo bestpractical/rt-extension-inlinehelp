@@ -1,5 +1,5 @@
 <%INIT>
-return unless $session{CurrentUser};
+return unless $session{CurrentUser} && $session{CurrentUser}->Id;
 return unless RT->Config->Get('ShowInlineHelp', $session{CurrentUser});
 
 my $lh = $session{CurrentUser}->LanguageHandle;
