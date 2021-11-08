@@ -1,4 +1,9 @@
 Revision history for RT-Extension-InlineHelp
 
+0.02 2021-11-08
+ - Fix typo of callback dir
+ - Check for valid current user before loading inline help
+   JavaScript callback
+
 0.01 2021-10-29
  - Initial version

@@ -1,7 +1,7 @@
 Changes
 etc/initialdata
-html/Callbacks/RT-Extensio-InlineHelp/Elements/Footer/Default
-html/Callbacks/RT-Extensio-InlineHelp/Elements/JavascriptConfig/Data
+html/Callbacks/RT-Extension-InlineHelp/Elements/Footer/Default
+html/Callbacks/RT-Extension-InlineHelp/Elements/JavascriptConfig/Data
 html/Elements/PopupHelp
 html/Helpers/HelpTopic
 inc/Module/Install.pm
