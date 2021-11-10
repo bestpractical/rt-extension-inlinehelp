@@ -1,5 +1,14 @@
 <script type="text/javascript">
 jQuery(function() {
+    jQuery('.icon-helper[data-toggle="tooltip"]').each( function() {
+        var elem = jQuery(this);
+        var title = elem.parent().text().replace(/:\s*$/, '');
+        var help = jQuery('<span></span>');
+        help.attr('data-content', elem.data('original-title'));
+        help.attr('data-help', title);
+        elem.replaceWith(help);
+    });
+
     // any help items that have been queued up via addPopupHelpItems() will
     // get their popover functionality added at this point, including the default rule
     // that matches any elements with a 'data-help' attribute
