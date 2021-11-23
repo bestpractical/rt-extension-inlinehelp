@@ -2,7 +2,7 @@ use strict;
 use warnings;
 package RT::Extension::InlineHelp;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 RT->AddStyleSheets('inlinehelp.css');
 RT->AddJavaScript('inlinehelp.js');
