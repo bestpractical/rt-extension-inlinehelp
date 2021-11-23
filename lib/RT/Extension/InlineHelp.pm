@@ -167,6 +167,12 @@ This extension adds help icons to various elements on pages throughout the
 application.  When the user hovers over the help icon, a popup dialog will
 display useful information related to that element.
 
+Custom fields and custom roles in RT already have input help that show "Entry hints"
+as tooltips. This extension replaces those elements with the version provided
+by InlineHelp, so the icons are the same size and the display is a popup with
+a title instead of a tooltip. The content still comes from the entry hint,
+so your existing configurations will continue to work.
+
 =head2 How it works
 
 Help content is managed as a collection of articles in specially-designated classes.
