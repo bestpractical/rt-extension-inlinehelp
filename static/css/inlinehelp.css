@@ -9,3 +9,7 @@
 .popup-help {
     margin-left: 5px;
 }
+
+#app-nav span.popup-help svg {
+    margin-bottom: 2px;
+}
