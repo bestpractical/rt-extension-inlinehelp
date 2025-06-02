@@ -15,6 +15,9 @@ function addPopupHelpItems() {
 function helpify($els, item={}, options={}) {
     $els.each(function(index) {
         const $el = jQuery(this);
+        if ( $el.hasClass('inline-helpified') ) {
+            return;
+        }
         const action = $el.data("action") || item.action || options.action;
         const title = $el.data("help") || $el.data("title") || item.title;
         const content = $el.data("bs-content") || item.content;
@@ -35,6 +38,7 @@ function helpify($els, item={}, options={}) {
             default:
                 $el.append( buildPopupHelpHtml( title, content ) );
         }
+        $el.addClass('inline-helpified');
     })
 }
 
