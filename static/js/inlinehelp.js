@@ -63,7 +63,7 @@ const popupHelpAjax = function(elt) {
             url: buildUrl(title),
             dataType: "json",
             success: function(response, statusText, xhr) {
-                $el.data('content', response.content);
+                $el.data('bs-content', response.content);
                 $el.popover('show');
             },
             error: function(e) {
