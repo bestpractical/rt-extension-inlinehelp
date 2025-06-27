@@ -5,7 +5,7 @@ DESCRIPTION
     This extension supplies the ability to add inline help to RT web pages.
 
 RT VERSION
-    Works with RT 5.0
+    Works with RT 6.0
 
 INSTALLATION
     perl Makefile.PL
@@ -22,7 +22,7 @@ INSTALLATION
         If you are upgrading this module, check for upgrading instructions
         in case changes need to be made to your database.
 
-    Edit your /opt/rt5/etc/RT_SiteConfig.pm
+    Edit your /opt/rt6/etc/RT_SiteConfig.pm
         Add this line:
 
             Plugin('RT::Extension::InlineHelp');
@@ -32,7 +32,7 @@ INSTALLATION
             Set($ShowInlineHelp, 1);
 
     Clear your mason cache
-            rm -rf /opt/rt5/var/mason_data/obj
+            rm -rf /opt/rt6/var/mason_data/obj
 
     Restart your webserver
 
@@ -493,7 +493,7 @@ BUGS
     or via the web at
         http://rt.cpan.org/Public/Dist/Display.html?Name=RT-Extension-InlineHelp
 LICENSE AND COPYRIGHT
-    This software is Copyright (c) 2021 by Best Practical Solutions, LLC
+    This software is Copyright (c) 2025 by Best Practical Solutions, LLC
 
     This is free software, licensed under:
 
