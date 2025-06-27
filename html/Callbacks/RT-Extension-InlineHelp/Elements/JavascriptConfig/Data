@@ -1,6 +1,7 @@
 <%INIT>
 return unless $session{CurrentUser} && $session{CurrentUser}->Id;
 return unless RT->Config->Get('ShowInlineHelp', $session{CurrentUser});
+$Config->{ShowInlineHelp} = 1;
 
 my $lh = $session{CurrentUser}->LanguageHandle;
 my @locs = ( $lh->language_tag(), $lh->fallback_languages() );
@@ -26,4 +27,5 @@ $CurrentUser->{InlineHelp} = \@help;
 
 <%ARGS>
 $CurrentUser
+$Config
 </%ARGS>
