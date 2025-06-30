@@ -20,6 +20,8 @@ no_index:
     - html
     - inc
     - static
+  package:
+    - HTML::Mason::Commands
 requires:
   perl: 5.10.1
 resources:
